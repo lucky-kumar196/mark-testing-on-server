@@ -885,11 +885,14 @@ class DashboardServer:
 
 
 
-import os
-
 if __name__ == "__main__":
-    # Render ka diya hua PORT uthao, agar na mile toh default 8000 rakho
+    import os
+    import uvicorn
+    
     port = int(os.environ.get("PORT", 8000))
     
-    # '0.0.0.0' par run karna zaroori hai
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    # Pehle DashboardServer ka object banayein
+    dashboard_server = DashboardServer()
+    
+    # Phir uske andar ki FastAPI app ko run karein
+    uvicorn.run(dashboard_server.app, host="0.0.0.0", port=port)

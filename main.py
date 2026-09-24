@@ -44,7 +44,6 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-import sounddevice as sd
 import numpy as np
 from google import genai
 from google.genai import types
@@ -2283,7 +2282,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-try:
-    import sounddevice as sd
-except OSError:
-    sd = None  # Cloud server ke liye fallback
+

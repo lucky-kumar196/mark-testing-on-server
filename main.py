@@ -2283,3 +2283,18 @@ if __name__ == "__main__":
     main()
 
 
+import os
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "JARVIS AI Assistant is Live!"
+
+if __name__ == '__main__':
+    # Render jo port dega, use uthayega (nahi toh default 5000 use karega)
+    port = int(os.environ.get("PORT", 5000))
+    
+    # '0.0.0.0' dena zaroori hai taaki server public traffic accept kar sake
+    app.run(host='0.0.0.0', port=port)

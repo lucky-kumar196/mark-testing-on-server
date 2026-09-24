@@ -5452,3 +5452,14 @@ class JarvisUI:
     def stop_speaking(self):
         if not self.muted:
             self.set_state("LISTENING")
+
+
+
+def _get_gpu(self) -> float:
+        global _gpu_probe_failed
+        if _gpu_probe_failed:
+            return -1.0
+        
+        # Cloud server par GPU check hi mat karo, seedha -1 return karo
+        _gpu_probe_failed = True
+        return -1.0

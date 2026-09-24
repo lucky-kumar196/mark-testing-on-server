@@ -2282,3 +2282,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+try:
+    import sounddevice as sd
+except OSError:
+    sd = None  # Cloud server ke liye fallback

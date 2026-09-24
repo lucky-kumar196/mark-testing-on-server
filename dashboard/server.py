@@ -541,7 +541,7 @@ class DashboardServer:
         def _auth(req: Request) -> bool:
             tok = req.headers.get("authorization", "").removeprefix("Bearer ").strip()
             return bool(tok) and tok in self._tokens
-@app.get("/admin/generate-key")
+        @app.get("/admin/generate-key")
         async def admin_gen_key(secret: str = ""):
             # Apni marzi ka koi bhi secret password yahan set kar lein
             if secret != "jarvis_secret_123":
@@ -550,6 +550,7 @@ class DashboardServer:
             # Yeh new_key() function aapke code mein pehle se hai!
             key = self.new_key(expiry_secs=600)  # 10 minutes tak valid rahegi
             return {"one_time_key": key}
+            
         # serve CryptoJS from local cache, fallback to CDN redirect
         @app.get("/static/crypto.js")
         async def serve_crypto():

@@ -882,3 +882,14 @@ class DashboardServer:
         print(f"[Dashboard] {proto}://{self._ip}:{PORT}")
         print("[Dashboard] Press 'Remote Control' in JARVIS UI to get the QR code.")
         await uvicorn.Server(cfg).serve()
+
+
+
+import os
+
+if __name__ == "__main__":
+    # Render ka diya hua PORT uthao, agar na mile toh default 8000 rakho
+    port = int(os.environ.get("PORT", 8000))
+    
+    # '0.0.0.0' par run karna zaroori hai
+    uvicorn.run(app, host="0.0.0.0", port=port)

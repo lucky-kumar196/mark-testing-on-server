@@ -564,11 +564,9 @@ class DashboardServer:
         async def login_page():
             return HTMLResponse(self._login_html)
 
-        @app.get("/", response_class=HTMLResponse)
+       @app.get("/", response_class=HTMLResponse)
         async def index():
-            # Auth is handled client-side via sessionStorage bearer token.
-            # Server-side header auth can't work here because browser navigations
-            # don't send custom headers (location.href doesn't carry Authorization).
+            # Bypass login and directly serve the main app interface
             html = (self._app_html
                     .replace("__IP__", self._ip)
                     .replace("__PORT__", str(PORT)))

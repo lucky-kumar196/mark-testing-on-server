@@ -220,5 +220,51 @@
       c.classList.add('shake');
     }
   </script>
+  <script>
+  // 1. Page load hote hi check karo ki kya device pehle se logged-in/trusted hai
+  window.addEventListener('DOMContentLoaded', async () => {
+    const savedDeviceToken = localStorage.getItem('jarvis_device_token');
+    if (savedDeviceToken) {
+      try {
+        let response = await fetch('/api/device-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ device_token: savedDeviceToken })
+        });
+        let data = await response.json();
+        if (data.ok) {
+          // Agar device token valid hai, toh session store karke seedha main app par jao
+          sessionStorage.setItem('jarvis_token', data.token);
+          sessionStorage.setItem('jarvis_key', data.key);
+          window.location.replace('/');
+          return;
+        }
+      } catch (e) {
+        console.log("Auto-login failed, showing manual login page.");
+      }
+    }
+  });
+
+  // 2. Jab user manual key daal kar CONNECT button dabaye
+  async function handleLogin(pinValue) {
+    let response = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin: pinValue })
+    });
+    let data = await response.json();
+    if (data.ok) {
+      // Session aur Device token dono save karo taaki agli baar dobara login na karna pade
+      sessionStorage.setItem('jarvis_token', data.token);
+      sessionStorage.setItem('jarvis_key', data.key);
+      if (data.device_token) {
+        localStorage.setItem('jarvis_device_token', data.device_token);
+      }
+      window.location.replace('/');
+    } else {
+      alert(data.error || "Invalid or expired key");
+    }
+  }
+</script>
 </body>
 </html>

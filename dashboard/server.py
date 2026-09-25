@@ -564,7 +564,7 @@ class DashboardServer:
         async def login_page():
             return HTMLResponse(self._login_html)
 
-       @app.get("/", response_class=HTMLResponse)
+        @app.get("/", response_class=HTMLResponse)
         async def index():
             # Bypass login and directly serve the main app interface
             html = (self._app_html

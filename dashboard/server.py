@@ -580,18 +580,42 @@ class DashboardServer:
             if entered in self._pending_keys and self._pending_keys[entered] > now:
                 del self._pending_keys[entered]          # one-time use
                 tok = secrets.token_urlsafe(32)
+                dev_tok = secrets.token_urlsafe(32)     # Device token for remembering this device
                 self._tokens.add(tok)
                 self._token_keys[tok] = entered
                 self._aes_key(entered)                   # pre-derive & cache
+                self._device_sessions[dev_tok] = {"session_key": entered} # Save device session
+                
                 if self._connect_callback:
                     self._connect_callback()
                 asyncio.create_task(self.broadcast(
                     {"type": "sys", "text": "Remote connection established."}
                 ))
-                # Bearer token in response body — no cookies needed (works on any browser/HTTP)
-                return JSONResponse({"ok": True, "token": tok})
+                # Return token and device_token so frontend can save both
+                return JSONResponse({"ok": True, "token": tok, "key": entered, "device_token": dev_tok})
             return JSONResponse({"ok": False, "error": "Invalid or expired key"},
                                 status_code=401)
+
+        # @app.post("/login")
+        # async def login(req: Request):
+        #     body    = await req.json()
+        #     entered = str(body.get("pin", "")).strip().upper()
+        #     now     = time.time()
+        #     if entered in self._pending_keys and self._pending_keys[entered] > now:
+        #         del self._pending_keys[entered]          # one-time use
+        #         tok = secrets.token_urlsafe(32)
+        #         self._tokens.add(tok)
+        #         self._token_keys[tok] = entered
+        #         self._aes_key(entered)                   # pre-derive & cache
+        #         if self._connect_callback:
+        #             self._connect_callback()
+        #         asyncio.create_task(self.broadcast(
+        #             {"type": "sys", "text": "Remote connection established."}
+        #         ))
+        #         # Bearer token in response body — no cookies needed (works on any browser/HTTP)
+        #         return JSONResponse({"ok": True, "token": tok})
+        #     return JSONResponse({"ok": False, "error": "Invalid or expired key"},
+        #                         status_code=401)
 
         @app.get("/auto-login")
         async def auto_login(key: str = ""):
